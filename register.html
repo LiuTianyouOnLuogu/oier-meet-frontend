@@ -1,0 +1,145 @@
+<div class="ui bottom attached segment">
+    <div class="ui attached message">
+        <div class="header">欢迎来到 OIer meet! </div>
+        <p>填写下面的表单来注册新的账户</p>
+        <!--<i class="icon warning"></i>-->
+        <strong>点击发送验证码后请稍等，若发送成功会有弹窗，以最新收到的验证码为准</strong>
+        <i class="icon warning"></i>
+    </div>
+    <form class="ui form attached fluid segment">
+        <div class="one fields">
+            <div class="field">
+                <label>用户名</label>
+                <input placeholder="用户名" type="text" id="username">
+            </div>
+        </div>
+        <div class="one fields">
+            <div class="field">
+                <label>邮箱</label>
+                <input placeholder="邮箱" type="text" id="email" style="width:180px;height:auto;"> &nbsp <div class="ui gray submit button" id="SeBtn">发送验证码</div>
+            </div>
+        </div>
+
+        <div class="one fields">
+            <div class="field">
+                <lable><strong>邮箱验证码</strong></lable>
+                <input placeholder="邮箱验证码" type="number" min="100000" max="999999" id="e_captcha">
+            </div>
+        </div>
+
+        <div class="field">
+            <label>密码</label>
+            <input type="Password" id="password">
+        </div>
+        <div class="field">
+            <label>重复一遍密码</label>
+            <input type="Password" id="repassword">
+        </div>
+
+        <div class="one fields">
+            <div class="field">
+                <label>验证码</label>
+                <input placeholder="验证码" type="text" id="captcha"
+                    style="width:100px;height:auto;">&nbsp<img id="captcha_img"
+                    border="1" src="/captcha/captcha.php" alt="" width="auto"
+                    height="35">
+                <a href="javascript:void(0)"
+                    onclick="document.getElementById('captcha_img').src='/captcha/captcha.php?r='+Math.random() ">换一张?</a>
+            </div>
+
+        </div>
+
+        <!-- <div class="inline field">
+            <div class="ui checkbox">
+                <input type="checkbox" id="terms">
+                <label for="terms">我同意上述条款以及条件。</label>
+            </div>
+        </div> -->
+        <div class="ui blue submit button" id="regBtn">注册</div>
+    </form>
+    <div class="ui bottom attached warning message"><i class="icon help"></i> 已经注册？
+        <a class="item" href="/login/">点此</a>登录。
+    </div>
+    <script src="/static/lib/md5/md5.min.js"></script>
+    <script type="text/javascript">
+        document.getElementById('regBtn').onclick = function () {
+            var input_username = document.getElementById("username").value;
+            var input_password = document.getElementById("password").value;
+            var input_repassword = document.getElementById("repassword").value;
+            var input_email = document.getElementById("email").value;
+            var input_capt = document.getElementById("captcha").value;
+            var input_e_captcha = document.getElementById("e_captcha").value;
+            // var input_terms = document.getElementById("terms").checked;
+            // if (!input_terms) {
+            //     swal({
+            //         title: "请同意条款后注册",
+            //         icon: "warning"
+            //     });
+            // }
+            // else {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/register/register.php");
+                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhr.send("username=" + input_username + "&password=" + input_password + "&repassword=" + input_repassword + "&email=" + input_email + "&capt=" + input_capt + "&e_captcha=" + input_e_captcha);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var res = xhr.responseText;
+                        // 后台响应成功则跳转到登录页面
+                        if (res == "注册成功") {
+                            swal({
+                                title: "注册成功",
+                                text: "注册成功，即将跳转到登录界面",
+                                icon: "success"
+                            });
+                            window.location.href = "/?module=login";
+                        }
+                        else {
+                            swal({
+                                title: "注册失败",
+                                text: res,
+                                icon: "error"
+                            });
+                        }
+                    }
+                }
+            }
+    </script>
+    <script type="text/javascript">
+        document.getElementById('SeBtn').onclick = function () 
+        {
+            var input_email = document.getElementById("email").value;
+            var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/register/sendemail.php");
+                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhr.send("email=" + input_email);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var res = xhr.responseText;
+                        // 后台响应成功则跳转到登录页面
+                        if (res == "发送成功") {
+                            swal({
+                                title: "发送成功",
+                                icon: "success"
+                            });
+                        }
+                        else {
+                            swal({
+                                title: "发送失败",
+                                text: res,
+                                icon: "error"
+                            });
+                        }
+                    }
+                }
+            }
+    </script>
+    <script>
+        var if_swal = document.getElementsByClassName('swal-overlay swal-overlay--show-modal');
+        $(document).keydown(function (event) {
+            if (event.keyCode == 13 && if_swal.length == 0) {
+                document.getElementById("regBtn").click();
+            }
+        });
+
+    </script>
+</div>
